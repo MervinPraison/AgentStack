@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentstack"
-version = "0.2.3"
+version = "0.2.5.1"
 description = "The fastest way to build robust AI agents"
 authors = [
     { name="Braelyn Boynton", email="bboynton97@gmail.com" },
@@ -31,6 +31,7 @@ dependencies = [
     "appdirs>=1.4.4",
     "python-dotenv>=1.0.1",
     "uv>=0.5.6",
+    "tomli>=2.2.1"
 ]
 
 [project.optional-dependencies]
@@ -46,7 +47,9 @@ crewai = [
     "crewai==0.83.0",
     "crewai-tools==0.14.0",
 ]
-
+all = [
+    "agentstack[dev,test,crewai]",
+]
 
 [tool.setuptools.package-data]
 agentstack = ["templates/**/*"]
@@ -67,8 +70,7 @@ exclude = [
     "dist",
     "*.egg-info",
     "agentstack/templates/",
-    "examples",
-    "__init__.py"
+    "examples"
 ]
 line-length = 110
 
