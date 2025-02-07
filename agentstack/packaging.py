@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import subprocess
 import select
+from packaging.requirements import Requirement
 from agentstack import conf, log
 
 
@@ -17,7 +18,7 @@ RE_UV_PROGRESS = re.compile(r'^(Resolved|Prepared|Installed|Uninstalled|Audited)
 # When calling `uv` we explicitly specify the --python executable to use so that
 # the packages are installed into the correct virtual environment.
 # In testing, when this was not set, packages could end up in the pyenv's
-# site-packages directory; it's possible an environemnt variable can control this.
+# site-packages directory; it's possible an environment variable can control this.
 
 
 def install(package: str):
@@ -30,6 +31,7 @@ def install(package: str):
     def on_error(line: str):
         log.error(f"uv: [error]\n {line.strip()}")
 
+    log.info(f"Installing {package}")
     _wrap_command_with_callbacks(
         [get_uv_bin(), 'add', '--python', '.venv/bin/python', package],
         on_progress=on_progress,
@@ -47,15 +49,28 @@ def install_project():
     def on_error(line: str):
         log.error(f"uv: [error]\n {line.strip()}")
 
-    _wrap_command_with_callbacks(
-        [get_uv_bin(), 'pip', 'install', '--python', '.venv/bin/python', '.'],
-        on_progress=on_progress,
-        on_error=on_error,
-    )
+    try:
+        result = _wrap_command_with_callbacks(
+            [get_uv_bin(), 'pip', 'install', '--python', '.venv/bin/python', '.'],
+            on_progress=on_progress,
+            on_error=on_error,
+        )
+        if result is False:
+            log.info("Retrying uv installation with --no-cache flag...")
+            _wrap_command_with_callbacks(
+                [get_uv_bin(), 'pip', 'install', '--no-cache', '--python', '.venv/bin/python', '.'],
+                on_progress=on_progress,
+                on_error=on_error,
+            )
+    except Exception as e:
+        log.error(f"Installation failed: {str(e)}")
+        raise
 
 
 def remove(package: str):
     """Uninstall a package with `uv`."""
+    # If `package` has been provided with a version, it will be stripped.
+    requirement = Requirement(package)
 
     # TODO it may be worth considering removing unused sub-dependencies as well
     def on_progress(line: str):
@@ -65,8 +80,9 @@ def remove(package: str):
     def on_error(line: str):
         log.error(f"uv: [error]\n {line.strip()}")
 
+    log.info(f"Uninstalling {requirement.name}")
     _wrap_command_with_callbacks(
-        [get_uv_bin(), 'remove', '--python', '.venv/bin/python', package],
+        [get_uv_bin(), 'remove', '--python', '.venv/bin/python', requirement.name],
         on_progress=on_progress,
         on_error=on_error,
     )
@@ -83,6 +99,7 @@ def upgrade(package: str):
     def on_error(line: str):
         log.error(f"uv: [error]\n {line.strip()}")
 
+    log.info(f"Upgrading {package}")
     _wrap_command_with_callbacks(
         [get_uv_bin(), 'pip', 'install', '-U', '--python', '.venv/bin/python', package],
         on_progress=on_progress,
@@ -91,7 +108,7 @@ def upgrade(package: str):
 
 
 def create_venv(python_version: str = DEFAULT_PYTHON_VERSION):
-    """Intialize a virtual environment in the project directory of one does not exist."""
+    """Initialize a virtual environment in the project directory of one does not exist."""
     if os.path.exists(conf.PATH / VENV_DIR_NAME):
         return  # venv already exists
 
@@ -134,8 +151,9 @@ def _wrap_command_with_callbacks(
     on_progress: Callable[[str], None] = lambda x: None,
     on_complete: Callable[[str], None] = lambda x: None,
     on_error: Callable[[str], None] = lambda x: None,
-) -> None:
-    """Run a command with progress callbacks."""
+) -> bool:
+    """Run a command with progress callbacks. Returns bool for cmd success."""
+    process = None
     try:
         all_lines = ''
         process = subprocess.Popen(
@@ -162,12 +180,16 @@ def _wrap_command_with_callbacks(
 
         if process.wait() == 0:  # return code: success
             on_complete(all_lines)
+            return True
         else:
             on_error(all_lines)
+            return False
     except Exception as e:
         on_error(str(e))
+        return False
     finally:
-        try:
-            process.terminate()
-        except:
-            pass
+        if process:
+            try:
+                process.terminate()
+            except:
+                pass
