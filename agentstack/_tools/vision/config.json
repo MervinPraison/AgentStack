@@ -1,0 +1,15 @@
+{
+  "name": "vision",
+  "category": "image-analysis",
+  "env": {
+    "ANTHROPIC_API_KEY": null, 
+    "VISION_PROMPT": null, 
+    "VISION_MODEL": null, 
+    "VISION_MAX_TOKENS": null
+  },
+  "dependencies": [
+    "anthropic>=0.45.2",
+    "requests>=2.31.0"
+  ],
+  "tools": ["analyze_image"]
+}

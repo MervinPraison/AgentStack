@@ -1,6 +1,23 @@
-# AgentStack [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![python-testing](https://github.com/agentops-ai/agentstack/actions/workflows/python-testing.yml/badge.svg) ![mypy](https://github.com/agentops-ai/agentstack/actions/workflows/mypy.yml/badge.svg) [![codecov.io](https://codecov.io/github/agentops-ai/agentstack/coverage.svg?branch=master)](https://codecov.io/github/agentops-ai/agentstack>?branch=master)
+# AgentStack
 
-<img alt="Logo" align="right" src="https://raw.githubusercontent.com/bboynton97/agentstack-docs/3491fe490ea535e7def74c83182dfa8dcfb1f562/logo/dark-sm.svg" width="20%" />
+ [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/release/python-3100/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![python-testing](https://github.com/agentops-ai/agentstack/actions/workflows/python-testing.yml/badge.svg) ![mypy](https://github.com/agentops-ai/agentstack/actions/workflows/mypy.yml/badge.svg) [![codecov.io](https://codecov.io/github/agentops-ai/agentstack/coverage.svg?branch=master)](https://codecov.io/github/agentops-ai/agentstack>?branch=master)
+
+
+AgentStack scaffolds your _agent stack_ - The tech stack that collectively is your agent
+
+<p align='center'>
+<img src='./docs/images/the_agent_stack.png' width='600' alt='AgentStack items'>
+</p>
+
+### Install AgentStack
+
+```sh
+curl --proto '=https' --tlsv1.2 -LsSf https://install.agentstack.sh | sh
+```
+
+or python [other install methods](https://docs.agentstack.sh/installation)
+
+### Start your agent!
 
 Create AI agent projects from the command line.
 
@@ -17,18 +34,12 @@ AgentStack serves as a great tool for starting your agent project and offers man
 
 AgentStack is _not_ a low-code alternative to development. Developers will still need an understanding of how to build with their selected agent framework.
 
-## Quick Overview
-
-```sh
-pip install agentstack
-agentstack init <project_name>
-```
-
-AgentStack scaffolds your _agent stack_ - the tech stack that collectively is your agent
-
-<p align='center'>
-<img src='https://github.com/AgentOps-AI/AgentStack/blob/7b40e53bf7300f69e3291c62d5b45e46ff818245/docs/images/the_agent_stack.png?raw=true' width='600' alt='agentstack init'>
-</p>
+### Currently Supported Providers
+- **LLMs**: Most all notable LLMs and providers are supported via LiteLLM or LangChain
+- **Framework**: Currently supported frameworks include CrewAI, LangGraph, OpenAI Swarms and LlamaStack
+  - Roadmap: Pydantic AI, Eliza, AG2 and Autogen
+- **Tools**: Maintaining the largest repository of framework-agnostic tools! All tools listed [here](https://docs.agentstack.sh/tools/community)
+- **Observability**: AgentOps baked in by default with first-tier support
 
 ### Get Started Immediately
 
@@ -44,7 +55,7 @@ Create a project, and you're good to go.
 To create a new agent project, run:
 
 ```sh
-pip install agentstack
+uv pip install agentstack # or other install method
 agentstack init <project_name>
 ```
 
@@ -56,10 +67,17 @@ Once the initialization is done, you can open your project folder:
 
 ```sh
 cd <your_agent_project>
+uv pip install
+```
+
+then run the default agent!
+
+```sh
+agentstack run
 ```
 
 ### Templates
-Additionally, pre-built templates are available as a shortcut to building your project. [View the available templates]().
+Additionally, pre-built templates are available as a shortcut to building your project. [View the available templates](https://docs.agentstack.sh/templates).
 
 ## Building Agent Functionality
 
@@ -101,26 +119,29 @@ Runs the agent project in development mode.<br>
 
 - **No Lock-In:** You can customize your setup at any time. AgentStack is designed to make it easy to get the components you need running right off the bat; it's up to you what to do next.
 
+- **Provider Agnosticism:** AgentStack is designed to be provider agnostic in all ways. This means especially that the framework layer of your agent stack should be interoperable with every other layer. Frameworks must still be supported by AgentStack. See supported frameworks above.
+
 AgentStack is not designed to be a low-code solution to building agents. Instead it is a great head-start for starting an agent project from scratch.
 
 ## Roadmap
 
-### Framework Agnosticism
-
-Development of AgentStack is being done primarily on [CrewAI](https://crewai.com). We will soon be working to make AgentStack fully framework-agnostic, meaning that any supported multi-agent framework can be used for your project. 
-
 ### Tools
-- Core Tools built by AgentStack
+- More [core tools](https://docs.agentstack.sh/tools/core) built by AgentStack
 - Preferred partners in the package directly
 - Community partner tools added through external repositories
+
+### New Stack Layers
+- Prompting layer (DSPy)
+- Eval Layer
+- UI layer
 
 ### Other Features
 - Generated testing
 - Integrated benchmarking
 - Easy integration of tools for browsing, RAG, and more.
 - A fast interactive test runner with built-in support for coverage reporting.
-- A live development server that warns about common mistakes.
-- A build script to bundle your project for production.
+- A live development server that warns about common mistakes (in progress).
+- A build script to bundle your project for production (in progress).
 
 ## License
 
@@ -128,6 +149,6 @@ AgentStack is open source software [licensed as MIT](LICENSE).
 
 ## How to Contribute
 
-AgentStack is a new project built by passionate AI agent developers! We'd love help making this tool better. Easy first issues are available, create new issues with feature ideas, or chat with us on our [Discord](https://discord.gg/JdWkh9tgTQ).
+AgentStack is a new project built by passionate AI agent developers! We'd love help making this tool better. Easy first issues are available, create new issues with feature ideas, or chat with us on our [Discord](https://discord.gg/JdWkh9tgTQ). Make sure you read our contributor documentation to familiarize yourself with the project at [How to Contribute](https://docs.agentstack.sh/contributing/how-to-contribute).
 
 If you are an Agent Tool developer, feel free to create an issue or even a PR to add your tool to AgentStack. 

@@ -31,10 +31,10 @@ jobs:
         pip install tox
 
     - name: Run tests with tox
-      run: tox
+      run: tox -m quick  # quick runs all 3.12 tests and then combines coverage
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml

@@ -1,0 +1,8 @@
+{
+  "name": "file_read",
+  "category": "computer-control",
+  "tools": ["read_file"],
+  "description": "Read contents of files",
+  "url": "https://docs.agentstack.sh/tools/tool/file_read",
+  "dependencies": []
+}
